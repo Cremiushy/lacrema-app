@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Crema Multiservicios</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Russo+One&family=Bree+Serif&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#000;color:#fff;min-height:100vh;}
+.hero{position:relative;width:100%;height:280px;background:linear-gradient(135deg,#001a4d 0%,#0033a0 40%,#001a4d 70%,#000 100%);overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.hero canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
+.hero-title{position:relative;font-family:'Dancing Script',cursive;font-weight:700;font-size:3.2rem;color:#fff;text-shadow:0 0 22px #4af,0 0 50px #08f,3px 4px 0px #001a6e;text-align:center;line-height:1.15;z-index:2;letter-spacing:1px;}
+.hero-sub{position:relative;font-size:0.92rem;letter-spacing:2px;color:#7df;margin-top:10px;text-align:center;z-index:2;}
+.edit-bar{background:#111;border-bottom:1px solid #0055cc;padding:8px 16px;display:none;align-items:center;gap:12px;flex-wrap:wrap;}
+.edit-bar.visible{display:flex;}
+.edit-bar span{font-size:12px;color:#7df;}
+.toggle-btn{background:#0044bb;color:#fff;border:none;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer;font-weight:bold;}
+.toggle-btn:hover{background:#0066ff;}
+.font-selector{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.font-selector label{font-size:11px;color:#7df;}
+.font-selector select{background:#001133;color:#7df;border:1px solid #0055cc;border-radius:5px;padding:4px 8px;font-size:11px;cursor:pointer;}
+.services{padding:24px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;background:#050510;}
+.service-card{background:linear-gradient(160deg,#001133,#000820);border:1.5px solid #0044cc;border-radius:12px;padding:20px;transition:border-color 0.2s,transform 0.15s;position:relative;overflow:hidden;}
+.service-card:hover{border-color:#2299ff;transform:translateY(-3px);}
+.service-card::before{content:'';position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;border-radius:12px;background:linear-gradient(135deg,#0066ff33,transparent 60%);pointer-events:none;}
+.card-icon{font-size:2rem;margin-bottom:10px;}
+.card-title{font-size:1.05rem;font-weight:800;color:#fff;letter-spacing:0.5px;margin-bottom:8px;}
+.card-desc{font-size:0.78rem;color:#aac4f0;line-height:1.6;}
+.price-list{margin-top:10px;display:flex;flex-direction:column;gap:5px;}
+.price-row{display:flex;justify-content:space-between;align-items:center;background:#001a4d;border-radius:6px;padding:5px 10px;font-size:0.75rem;}
+.price-label{color:#aac4f0;}
+.price-val{color:#7df;font-weight:bold;white-space:nowrap;margin-left:8px;}
+.price-note{font-size:0.7rem;color:#ff9;margin-top:6px;line-height:1.4;background:#001a00;border-radius:6px;padding:5px 10px;border-left:2px solid #4a4;}
+.edit-btn{margin-top:12px;width:100%;background:#003399;color:#7df;border:1px solid #0055cc;border-radius:6px;padding:6px;font-size:0.75rem;cursor:pointer;font-weight:bold;display:none;}
+.edit-btn.visible{display:block;}
+.edit-btn:hover{background:#0044bb;}
+
+/* FORM */
+.form-section{background:#000d2e;border-top:1.5px solid #0044cc;border-bottom:1.5px solid #0044cc;padding:28px 20px;}
+.form-section h3{font-size:1rem;color:#7df;letter-spacing:2px;text-align:center;margin-bottom:20px;}
+.form-wrap{max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:12px;}
+.form-wrap input,.form-wrap textarea{width:100%;background:#000820;border:1px solid #0055cc;color:#fff;border-radius:8px;padding:10px 14px;font-size:0.85rem;outline:none;transition:border-color 0.2s;}
+.form-wrap input:focus,.form-wrap textarea:focus{border-color:#2299ff;}
+.form-wrap textarea{resize:vertical;min-height:100px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.submit-btn{background:linear-gradient(135deg,#0044bb,#0066ff);color:#fff;border:none;border-radius:8px;padding:12px;font-size:0.9rem;font-weight:bold;cursor:pointer;letter-spacing:1px;transition:opacity 0.2s;}
+.submit-btn:hover{opacity:0.85;}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.form-msg{text-align:center;font-size:0.82rem;padding:10px;border-radius:8px;display:none;}
+.form-msg.success{background:#001a00;color:#4f4;border:1px solid #4a4;display:block;}
+.form-msg.error{background:#1a0000;color:#f44;border:1px solid #a44;display:block;}
+.tipo-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tipo-btn{background:#000820;border:1.5px solid #0044cc;color:#aac4f0;border-radius:8px;padding:10px;font-size:0.78rem;cursor:pointer;text-align:center;transition:all 0.2s;}
+.tipo-btn.selected{background:#001a4d;border-color:#2299ff;color:#fff;font-weight:bold;}
+.tipo-label{font-size:0.72rem;color:#7df;margin-bottom:6px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,10,0.88);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#000d2e;border:1.5px solid #0055cc;border-radius:14px;padding:24px;width:90%;max-width:480px;max-height:88vh;overflow-y:auto;}
+.modal h2{font-size:1rem;color:#7df;margin-bottom:16px;letter-spacing:1px;}
+.modal label{font-size:0.72rem;color:#aac4f0;display:block;margin-bottom:3px;margin-top:10px;}
+.modal input,.modal textarea{width:100%;background:#000820;border:1px solid #0055cc;color:#fff;border-radius:5px;padding:7px 9px;font-size:0.78rem;margin-bottom:4px;resize:vertical;}
+.modal-btns{display:flex;gap:8px;margin-top:14px;}
+.modal-save{flex:1;background:#0055ff;color:#fff;border:none;border-radius:6px;padding:8px;font-size:0.8rem;cursor:pointer;font-weight:bold;}
+.modal-close{flex:1;background:#220011;color:#f88;border:1px solid #f44;border-radius:6px;padding:8px;font-size:0.8rem;cursor:pointer;}
+.img-preview{width:100%;max-height:140px;object-fit:cover;border-radius:7px;margin-top:6px;display:none;}
+.img-preview.show{display:block;}
+
+/* CONTACT */
+.contact{background:#000820;border-top:1.5px solid #0044cc;padding:24px 20px;text-align:center;}
+.contact-header{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:14px;}
+.contact-header h3{font-size:1rem;color:#7df;letter-spacing:2px;}
+.arrow-down-l{animation:bdl 1.1s ease-in-out infinite;}
+.arrow-down-r{animation:bdr 1.1s ease-in-out infinite;}
+@keyframes bdl{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+@keyframes bdr{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+.contact-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 28px;margin-bottom:14px;}
+.contact-item{font-size:0.82rem;color:#cce4ff;display:flex;align-items:center;gap:7px;}
+.contact-item a{color:#5af;text-decoration:none;}
+.contact-item a:hover{color:#8df;}
+.social-row{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 22px;margin:10px 0;}
+.social-item{font-size:0.82rem;color:#aac4f0;display:flex;align-items:center;gap:7px;text-decoration:none;}
+.social-item:hover span{color:#7df;}
+.social-item span{color:#fff;font-weight:bold;}
+.location-row{font-size:0.8rem;color:#7df;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;}
+.location-row:hover{color:#adf;}
+.link-row{font-size:0.78rem;color:#5af;margin-top:8px;cursor:pointer;}
+.link-row:hover{color:#8df;text-decoration:underline;}
+.qr-section{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.qr-label{font-size:0.72rem;color:#7df;letter-spacing:1px;}
+.footer-copy{font-size:0.7rem;color:#446;margin-top:14px;}
+.ico{display:inline-block;vertical-align:middle;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <canvas id="sparkCanvas"></canvas>
+  <div class="hero-title" id="heroTitle">✦ La Crema Multiservicios ✦</div>
+  <div class="hero-sub">Centro de Internet & Servicios Digitales</div>
+</div>
+
+<div class="edit-bar" id="editBar">
+  <span>🔐 Panel de administrador:</span>
+  <button class="toggle-btn" onclick="toggleEdit()">✏️ Activar edición</button>
+  <div class="font-selector">
+    <label>Fuente de la página:</label>
+    <select onchange="changeFont(this.value)">
+      <option value="dancing">Dancing Script Bold</option>
+      <option value="russo">Russo One</option>
+      <option value="bree">Bree Serif</option>
+    </select>
+  </div>
+  <span id="edit-status" style="color:#ff9900;font-size:11px;"></span>
+</div>
+
+<div class="services" id="servicesGrid"></div>
+
+<!-- FORMULARIO -->
+<div class="form-section">
+  <h3>
+    <svg style="vertical-align:middle;margin-right:10px;" width="22" height="22" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#25D366"/><path fill="#fff" d="M34.5 28.9c-.5-.2-2.9-1.4-3.3-1.6s-.8-.2-1.1.2c-.3.5-1.2 1.6-1.5 1.9-.3.3-.5.4-1 .1-.5-.2-2-.7-3.8-2.3-1.4-1.2-2.3-2.7-2.6-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3 0-.6-.1-.8-.1-.2-1.1-2.6-1.5-3.6-.4-.9-.8-.8-1.1-.8h-.9c-.3 0-.8.1-1.2.6-.4.5-1.6 1.5-1.6 3.7 0 2.2 1.6 4.3 1.8 4.6.2.3 3.1 4.7 7.5 6.6 4.4 1.9 4.4 1.3 5.2 1.2.8-.1 2.6-1.1 3-2.1.4-1 .4-1.9.3-2.1z"/></svg>
+    Servicio requerido
+    <svg style="vertical-align:middle;margin-left:10px;" width="22" height="22" viewBox="0 0 48 48"><path fill="#EA4335" d="M6 40h6V23.8L4 18v18c0 2.2 1.8 4 2 4z"/><path fill="#34A853" d="M36 40h6c2.2 0 4-1.8 4-4V18l-10 5.8z"/><path fill="#4285F4" d="M36 10l-12 8.8L12 10H6v8l18 12 18-12v-8z"/><path fill="#FBBC05" d="M4 18l8 5.8V10H6C4.9 10 4 10.9 4 12v6z"/><path fill="#EA4335" d="M44 12c0-1.1-.9-2-2-2h-6v13.8L44 18v-6z"/></svg>
+  </h3>
+  <div class="form-wrap">
+    <div class="form-row">
+      <input type="text" id="fNombre" placeholder="Tu nombre y dirección donde vives" required>
+      <input type="tel" id="fTelefono" placeholder="Tu teléfono / WhatsApp">
+    </div>
+    <div>
+      <div class="tipo-label">¿Sobre qué consultas?</div>
+      <div class="tipo-btns">
+        <div class="tipo-btn" id="btn-productos" onclick="selectTipo('productos')">🖨️ Impresiones, productos & servicios</div>
+        <div class="tipo-btn" id="btn-cursos" onclick="selectTipo('cursos')">🎓 Cursos, clases & precios</div>
+      </div>
+    </div>
+    <textarea id="fMensaje" placeholder="Escribe tu servicio aquí"></textarea>
+    <button class="submit-btn" id="submitBtn" onclick="enviarFormulario()"><svg style="vertical-align:middle;margin-right:8px;" width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="1" y="3" width="22" height="18" rx="3" fill="#000"/><rect x="1" y="3" width="22" height="18" rx="3" stroke="#00bfff" stroke-width="1.5"/><path d="M1 6l11 8 11-8" stroke="#00bfff" stroke-width="1.8" stroke-linecap="round"/><path d="M1 21l7-6M23 21l-7-6" stroke="#00bfff" stroke-width="1.3" stroke-linecap="round"/></svg>Enviar</button>
+    <div class="form-msg" id="formMsg"></div>
+  </div>
+</div>
+
+<div class="contact">
+  <div class="contact-header">
+    <svg class="arrow-down-l" width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="14" fill="#0033a0"/>
+      <polyline points="7,10 14,19 21,10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <h3>Contáctanos</h3>
+    <svg class="arrow-down-r" width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <circle cx="14" cy="14" r="14" fill="#0033a0"/>
+      <polyline points="7,10 14,19 21,10" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-item">
+      <svg class="ico" width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M6 40h6V23.8L4 18v18c0 2.2 1.8 4 2 4z"/><path fill="#34A853" d="M36 40h6c2.2 0 4-1.8 4-4V18l-10 5.8z"/><path fill="#4285F4" d="M36 10l-12 8.8L12 10H6v8l18 12 18-12v-8z"/><path fill="#FBBC05" d="M4 18l8 5.8V10H6C4.9 10 4 10.9 4 12v6z"/><path fill="#EA4335" d="M44 12c0-1.1-.9-2-2-2h-6v13.8L44 18v-6z"/></svg>
+      <a href="mailto:lacremamultiservicios@gmail.com">lacremamultiservicios@gmail.com</a>
+    </div>
+    <div class="contact-item">
+      <svg class="ico" width="20" height="20" viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="#25D366"/><path fill="#fff" d="M34.5 28.9c-.5-.2-2.9-1.4-3.3-1.6s-.8-.2-1.1.2c-.3.5-1.2 1.6-1.5 1.9-.3.3-.5.4-1 .1-.5-.2-2-.7-3.8-2.3-1.4-1.2-2.3-2.7-2.6-3.2-.3-.5 0-.7.2-.9.2-.2.5-.5.7-.8.2-.3.3-.5.4-.8.1-.3 0-.6-.1-.8-.1-.2-1.1-2.6-1.5-3.6-.4-.9-.8-.8-1.1-.8h-.9c-.3 0-.8.1-1.2.6-.4.5-1.6 1.5-1.6 3.7 0 2.2 1.6 4.3 1.8 4.6.2.3 3.1 4.7 7.5 6.6 4.4 1.9 4.4 1.3 5.2 1.2.8-.1 2.6-1.1 3-2.1.4-1 .4-1.9.3-2.1z"/></svg>
+      <a href="https://wa.me/18095900429" target="_blank">809-590-0429</a>
+    </div>
+  </div>
+  <div style="font-size:0.78rem;color:#7df;margin-bottom:8px;letter-spacing:1px;">Síguenos en:</div>
+  <div class="social-row">
+    <a class="social-item" href="https://www.instagram.com/lacreamultiservicios" target="_blank">
+      <svg class="ico" width="20" height="20" viewBox="0 0 48 48"><defs><radialGradient id="ig" cx="19%" cy="99%" r="108%"><stop offset="0%" stop-color="#FFA700"/><stop offset="15%" stop-color="#FF6A00"/><stop offset="35%" stop-color="#EF0090"/><stop offset="60%" stop-color="#8B2FC9"/><stop offset="100%" stop-color="#4F5BD5"/></radialGradient></defs><rect width="48" height="48" rx="10" fill="url(#ig)"/><rect x="14" y="14" width="20" height="20" rx="5" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="24" cy="24" r="5" fill="none" stroke="#fff" stroke-width="2.5"/><circle cx="31" cy="17" r="1.5" fill="#fff"/></svg>
+      <span>La Crema Multiservicios</span>
+    </a>
+    <a class="social-item" href="https://www.youtube.com/@LaCremaMultiservicios" target="_blank">
+      <svg class="ico" width="20" height="20" viewBox="0 0 48 48"><rect width="48" height="48" rx="8" fill="#FF0000"/><polygon points="19,15 37,24 19,33" fill="#fff"/></svg>
+      <span>La Crema Multiservicios</span>
+    </a>
+    <a class="social-item" href="https://www.facebook.com/lacreamultiservicios" target="_blank">
+      <svg class="ico" width="20" height="20" viewBox="0 0 48 48"><rect width="48" height="48" rx="8" fill="#1877F2"/><path fill="#fff" d="M31 24h-5v16h-6V24h-3v-6h3v-3c0-4 2-6 6-6h4v6h-3c-1 0-1 .4-1 1v2h4l-1 6z"/></svg>
+      <span>La Crema Multiservicios</span>
+    </a>
+  </div>
+  <a class="location-row" href="https://maps.google.com/?q=La+Crema+Multiservicios" target="_blank">
+    <svg class="ico" width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5z" fill="#5af"/></svg>
+    Búscame en: <strong style="color:#fff;margin-left:4px;">La Crema Multiservicios</strong>
+  </a>
+  <div class="link-row" onclick="window.open('https://cremiushy.github.io/La-Crema-Multiservicios','_blank')">
+    🔗 cremiushy.github.io/La-Crema-Multiservicios
+  </div>
+  <div class="qr-section">
+    <div class="qr-label">📱 Escanea para visitarnos</div>
+    <div id="qrCode"></div>
+  </div>
+  <div class="footer-copy">© 2025 La Crema Multiservicios — Todos los derechos reservados</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Editar servicio</h2>
+    <label>Título</label><input type="text" id="mTitle">
+    <label>Descripción</label><textarea rows="3" id="mDesc"></textarea>
+    <label>Imagen (URL)</label>
+    <input type="text" id="mImg" placeholder="https://..." oninput="previewImg()">
+    <img id="imgPreview" class="img-preview" src="" alt="preview">
+    <div id="pricesContainer"></div>
+    <button onclick="addPriceRow()" style="margin-top:8px;background:#001a4d;color:#7df;border:1px solid #0055cc;border-radius:5px;padding:5px 12px;font-size:0.72rem;cursor:pointer;">+ Agregar precio</button>
+    <div class="modal-btns">
+      <button class="modal-save" onclick="saveModal()">💾 Guardar cambios</button>
+      <button class="modal-close" onclick="closeModal()">✕ Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============ CONFIGURACIÓN ============
+const WEBHOOK_URL='http://localhost:5678/webhook/contacto';
+const WHATSAPP_NUMBER='18095900429';
+const GMAIL='lacremamultiservicios@gmail.com';
+// =======================================
+
+const services=[
+  {icon:"📄",title:"Papelería & artículos",desc:"Venta de artículos de papelería, útiles escolares, productos de oficina. Plastificado de documentos y más.",prices:[],notes:"",img:""},
+  {icon:"💻",title:"Trabajos a computadora",desc:"Trabajos escolares para educación básica, media y universitaria. Copias, impresiones, empaste de tesis, anteproyectos y monográficos.",prices:[{label:"Trabajos a computadora",val:"RD$25 / 2 hojas"},{label:"Hora de internet",val:"RD$50 / hora"},{label:"Cabina privada",val:"RD$100 / hora por persona"}],notes:"",img:""},
+  {icon:"🎮",title:"Videojuegos",desc:"Área de videojuegos con cabinas disponibles para jugar solo o acompañado.",prices:[{label:"Hora de juego",val:"RD$100 / hora"},{label:"Persona adicional",val:"+RD$25 por cabeza"}],notes:"",img:""},
+  {icon:"📚",title:"Forrado de libros & cuadernos",desc:"Servicio de forrado profesional para libros y cuadernos de todos los tamaños.",prices:[],notes:"",img:""},
+  {icon:"📷",title:"Fotos & laminados",desc:"Fotos 2×2 y 4×4 para pasaportes y documentos. Laminado y encuadrado de fotos.",prices:[],notes:"",img:""},
+  {icon:"🖥️",title:"Reparación de computadoras & móviles",desc:"Chequeo, reparación y programación de equipos. Instalación de software, programas y apps. Servicio completo para móviles.",prices:[],notes:"",img:""},
+  {icon:"🎓",title:"Clases de informática",desc:"Informática para principiantes y avanzada basada en inteligencia artificial. Digitación básico y avanzado en español e inglés.",prices:[{label:"Mensualidad",val:"RD$1,000 / mes"},{label:"Hermanos (2 personas)",val:"RD$1,500 / mes"},{label:"Duración del curso",val:"2 meses máximo"}],notes:"Máx. 8 alumnos en informática inicial · Máx. 5 en informática avanzada (IA)",img:""},
+  {icon:"🌐",title:"Clases de inglés fluido",desc:"Para egresados de Inglés por Inmersión, ITLA, Dominico Americano y cualquier institución bilingüe. Al finalizar se garantiza acceso a oportunidades en call centers para mayores de 16 años.",prices:[{label:"Duración",val:"2 meses"},{label:"Inversión total",val:"RD$5,000"}],notes:"Máx. 10 alumnos por horario · +16 años: garantía de referido a call center al aprobar",img:""}
+];
+
+const fonts={dancing:{family:"'Dancing Script',cursive",weight:"700"},russo:{family:"'Russo One',sans-serif",weight:"400"},bree:{family:"'Bree Serif',serif",weight:"400"}};
+let editMode=false,editIdx=-1,adminUnlocked=false,tipoSeleccionado='';
+
+function selectTipo(tipo){
+  tipoSeleccionado=tipo;
+  document.getElementById('btn-productos').classList.toggle('selected',tipo==='productos');
+  document.getElementById('btn-cursos').classList.toggle('selected',tipo==='cursos');
+}
+
+async function enviarFormulario(){
+  const nombre=document.getElementById('fNombre').value.trim();
+  const telefono=document.getElementById('fTelefono').value.trim();
+  const mensaje=document.getElementById('fMensaje').value.trim();
+  const btn=document.getElementById('submitBtn');
+  if(!nombre){showMsg('Por favor escribe tu nombre.','error');return;}
+  if(!tipoSeleccionado){showMsg('Por favor selecciona el tipo de consulta.','error');return;}
+  if(!mensaje){showMsg('Por favor escribe tu consulta.','error');return;}
+  btn.disabled=true;btn.textContent='Enviando...';
+  const datos={nombre,telefono,mensaje,tipo:tipoSeleccionado,fecha:new Date().toLocaleString('es-DO')};
+  try{
+    const res=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(datos)});
+    if(res.ok){
+      showMsg('✅ ¡Mensaje enviado! Te contactaremos pronto.','success');
+      document.getElementById('fNombre').value='';
+      document.getElementById('fTelefono').value='';
+      document.getElementById('fMensaje').value='';
+      tipoSeleccionado='';
+      document.getElementById('btn-productos').classList.remove('selected');
+      document.getElementById('btn-cursos').classList.remove('selected');
+    } else { abrirWhatsApp(datos); }
+  } catch(e){ abrirWhatsApp(datos); }
+  btn.disabled=false;btn.innerHTML='Enviando...';
+}
+
+function abrirWhatsApp(datos){
+  const texto=`Hola, soy *${datos.nombre}*.\n*Consulta sobre:* ${datos.tipo==='cursos'?'Cursos y clases':'Impresiones y productos'}\n*Mensaje:* ${datos.mensaje}\n*Teléfono:* ${datos.telefono||'No indicado'}`;
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(texto)}`,'_blank');
+  showMsg('✅ Abriendo WhatsApp con tu consulta...','success');
+}
+
+function showMsg(text,type){
+  const msg=document.getElementById('formMsg');
+  msg.textContent=text;msg.className='form-msg '+type;
+  setTimeout(()=>msg.className='form-msg',5000);
+}
+
+function changeFont(val){
+  const f=fonts[val];if(!f)return;
+  document.body.style.fontFamily=f.family;
+  document.getElementById('heroTitle').style.fontFamily=f.family;
+  document.getElementById('heroTitle').style.fontWeight=f.weight;
+  document.querySelectorAll('.card-title').forEach(el=>{el.style.fontFamily=f.family;});
+}
+
+document.addEventListener('keydown',function(e){
+  if(e.ctrlKey&&e.altKey&&e.code==='KeyE'){
+    adminUnlocked=!adminUnlocked;
+    const bar=document.getElementById('editBar');
+    if(adminUnlocked){bar.classList.add('visible');document.querySelectorAll('.edit-btn').forEach(b=>b.classList.add('visible'));}
+    else{bar.classList.remove('visible');document.querySelectorAll('.edit-btn').forEach(b=>b.classList.remove('visible'));if(editMode){editMode=false;renderCards();}}
+  }
+});
+
+function renderCards(){
+  const grid=document.getElementById('servicesGrid');grid.innerHTML='';
+  services.forEach((s,i)=>{
+    const pH=s.prices.length?`<div class="price-list">${s.prices.map(p=>`<div class="price-row"><span class="price-label">${p.label}</span><span class="price-val">${p.val}</span></div>`).join('')}</div>`:'';
+    const nH=s.notes?`<div class="price-note">ℹ️ ${s.notes}</div>`:'';
+    const iH=s.img?`<img src="${s.img}" style="width:100%;max-height:130px;object-fit:cover;border-radius:7px;margin-bottom:8px;" onerror="this.style.display='none'">`:'';
+    const card=document.createElement('div');card.className='service-card';
+    card.innerHTML=`${iH}<div class="card-icon">${s.icon}</div><div class="card-title">${s.title}</div><div class="card-desc">${s.desc}</div>${pH}${nH}<button class="edit-btn${adminUnlocked?' visible':''}" onclick="openModal(${i})">✏️ Editar este servicio</button>`;
+    grid.appendChild(card);
+  });
+}
+
+function openModal(i){
+  editIdx=i;const s=services[i];
+  document.getElementById('modalTitle').textContent='Editar: '+s.title;
+  document.getElementById('mTitle').value=s.title;
+  document.getElementById('mDesc').value=s.desc;
+  document.getElementById('mImg').value=s.img||'';
+  const pr=document.getElementById('imgPreview');
+  if(s.img){pr.src=s.img;pr.classList.add('show');}else{pr.classList.remove('show');}
+  renderPriceRows(s.prices);
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function renderPriceRows(prices){
+  const c=document.getElementById('pricesContainer');c.innerHTML='<label style="margin-top:10px;">Precios</label>';
+  prices.forEach((p,j)=>{
+    const row=document.createElement('div');row.style='display:flex;gap:6px;margin-bottom:5px;';
+    row.innerHTML=`<input type="text" value="${p.label}" id="pl-${j}" placeholder="Concepto" style="flex:1.5;"><input type="text" value="${p.val}" id="pv-${j}" placeholder="Precio" style="flex:1;"><button onclick="removePrice(${j})" style="background:#330011;color:#f88;border:1px solid #f44;border-radius:4px;padding:0 8px;cursor:pointer;font-size:0.8rem;">✕</button>`;
+    c.appendChild(row);
+  });
+}
+
+function addPriceRow(){if(editIdx<0)return;services[editIdx].prices.push({label:'',val:''});renderPriceRows(services[editIdx].prices);}
+function removePrice(j){if(editIdx<0)return;services[editIdx].prices.splice(j,1);renderPriceRows(services[editIdx].prices);}
+function previewImg(){const v=document.getElementById('mImg').value.trim();const pr=document.getElementById('imgPreview');if(v){pr.src=v;pr.classList.add('show');}else{pr.classList.remove('show');}}
+
+function saveModal(){
+  if(editIdx<0)return;
+  services[editIdx].title=document.getElementById('mTitle').value;
+  services[editIdx].desc=document.getElementById('mDesc').value;
+  services[editIdx].img=document.getElementById('mImg').value.trim();
+  const upd=[];let j=0;
+  while(document.getElementById('pl-'+j)){upd.push({label:document.getElementById('pl-'+j).value,val:document.getElementById('pv-'+j).value});j++;}
+  services[editIdx].prices=upd.filter(p=>p.label||p.val);
+  closeModal();renderCards();
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');}
+document.getElementById('modalOverlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+function toggleEdit(){editMode=!editMode;const btn=document.querySelector('.toggle-btn');const st=document.getElementById('edit-status');if(editMode){btn.textContent='🔒 Desactivar edición';btn.style.background='#aa6600';st.textContent='Haz clic en "Editar este servicio" en cualquier tarjeta';}else{btn.textContent='✏️ Activar edición';btn.style.background='#0044bb';st.textContent='';}}
+
+renderCards();
+
+window.addEventListener('load',function(){
+  try{new QRCode(document.getElementById('qrCode'),{text:'https://cremiushy.github.io/La-Crema-Multiservicios',width:120,height:120,colorDark:'#0044cc',colorLight:'#000820',correctLevel:QRCode.CorrectLevel.H});}catch(e){}
+});
+
+const canvas=document.getElementById('sparkCanvas');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}
+function rS(){return{x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2.5+0.5,a:Math.random(),da:(Math.random()-0.5)*0.04,dx:(Math.random()-0.5)*0.4,dy:(Math.random()-0.5)*0.4,color:['#4af','#7df','#fff','#08f','#aef'][Math.floor(Math.random()*5)]};}
+const sparks=[];for(let i=0;i<80;i++)sparks.push(rS());
+function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);sparks.forEach(s=>{s.a+=s.da;if(s.a<=0||s.a>=1)s.da*=-1;s.x+=s.dx;s.y+=s.dy;if(s.x<0)s.x=canvas.width;if(s.x>canvas.width)s.x=0;if(s.y<0)s.y=canvas.height;if(s.y>canvas.height)s.y=0;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=s.color;ctx.globalAlpha=Math.max(0,Math.min(1,s.a));ctx.fill();});ctx.globalAlpha=1;requestAnimationFrame(animate);}
+resize();animate();
+window.addEventListener('resize',resize);
+</script>
+</body>
+</html>
