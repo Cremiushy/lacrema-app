@@ -941,6 +941,108 @@
       .form-row { grid-template-columns: 1fr; }
     }
 </style>
+<style>
+/* PANEL LATERAL MEJORADO */
+.lateral-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 420px;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f1523 0%, #1a2040 100%);
+  border-left: 3px solid #1E5FFF;
+  overflow-y: auto;
+  z-index: 9999;
+  box-shadow: -12px 0 48px rgba(30, 95, 255, 0.15);
+  padding: 2rem 1.5rem;
+}
+
+.lateral-panel h2 {
+  font-family: 'Dancing Script', cursive;
+  font-size: 1.6rem;
+  color: #00C8FF;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.panel-section {
+  margin-bottom: 1.5rem;
+  background: rgba(30, 95, 255, 0.1);
+  border: 1px solid rgba(30, 95, 255, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.panel-section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #00C8FF;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 1rem;
+}
+
+.products-grid-mini {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.8rem;
+}
+
+.product-mini {
+  background: rgba(30, 95, 255, 0.15);
+  border: 1px solid rgba(30, 95, 255, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.product-mini img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+}
+
+.product-mini p {
+  padding: 0.6rem;
+  color: #fff;
+  font-size: 0.7rem;
+  margin: 0;
+  text-align: center;
+}
+
+.product-mini-price {
+  color: #00C8FF;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 0.4rem;
+  text-align: center;
+  background: rgba(0, 200, 255, 0.1);
+}
+
+body {
+  margin-right: 420px;
+}
+
+@media (max-width: 1400px) {
+  .lateral-panel {
+    width: 380px;
+  }
+  body {
+    margin-right: 380px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .lateral-panel {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin-top: 2rem;
+  }
+  body {
+    margin-right: 0;
+  }
+}
+</style>
 </head>
 <body>
 
@@ -3089,6 +3191,55 @@ function showProductsGallery() {
   }
 }
 </script>
+
+
+<div class="lateral-panel">
+  <h2>📸 Catálogo</h2>
+  
+  <div class="panel-section">
+    <div class="panel-section-title">Productos Populares</div>
+    <div class="products-grid-mini">
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_03.jpg" alt="Stickers">
+        <p>Stickers</p>
+        <div class="product-mini-price">RD$25</div>
+      </div>
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_05.jpg" alt="Crayones">
+        <p>Crayones</p>
+        <div class="product-mini-price">RD$160</div>
+      </div>
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_06.jpg" alt="Corrector">
+        <p>Corrector</p>
+        <div class="product-mini-price">RD$60</div>
+      </div>
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_09.jpg" alt="Marcadores">
+        <p>Marcadores</p>
+        <div class="product-mini-price">RD$50</div>
+      </div>
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_16.jpg" alt="Ojos">
+        <p>Ojos Móviles</p>
+        <div class="product-mini-price">RD$60</div>
+      </div>
+      <div class="product-mini">
+        <img src="https://raw.githubusercontent.com/Cremiushy/lacrema-app/main/producto_18.jpg" alt="Acuarela">
+        <p>Acuarela</p>
+        <div class="product-mini-price">RD$150</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-section">
+    <div class="panel-section-title">📞 Contacto</div>
+    <p style="font-size: 0.85rem; color: #ccc; line-height: 1.6; margin: 0;">
+      <strong>WhatsApp:</strong><br>+1 (809) 356-4915<br><br>
+      <strong>Email:</strong><br>lacremamultiservicios@gmail.com
+    </p>
+  </div>
+</div>
 
 </body>
 </html>
